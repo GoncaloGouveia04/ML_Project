@@ -1,0 +1,8 @@
+Create a new conda environment:
+conda env create -f environment.yml
+
+Activate the conda environment:
+conda activate machine_learning_project
+
+Start the Jupyter Notebook:
+jupyter notebook

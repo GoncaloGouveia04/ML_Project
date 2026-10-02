@@ -1,0 +1,24 @@
+Competition rules
+These rules cover the Kaggle entry and the work used to produce it. Submissions that do not meet them may receive severe grading penalties. The Machine Learning project brief governs Machine Learning assessment; Advanced Topics in AI groups should follow their own course instructions for assessed deliverables.
+
+Project methods
+You may implement predictive models yourself or use vanilla scikit-learn, TensorFlow, Keras, PyTorch, skorch, or Transformers. You may use other libraries for tasks outside predictive modelling. Be ready to explain any algorithm or technique that was not presented in practical classes.
+Lazy Predict and similar AutoML packages, including Feature Tools and TSFresh, are prohibited.
+Automated profiling output counts as analysis only when it yields an insight that you act on in the project.
+For Machine Learning groups, the project must compare at least five algorithms covered in class, explain the model assessment strategy and metrics, perform feature selection, and optimize the strongest approaches.
+Delivered notebook
+Include every step that informed the final solution, including model selection and optimization. Comment code that is not needed to run the final pipeline. If you tested relevant work that does not fit in the clean notebook, submit that code through the separate course form described in the project brief.
+Keep the notebook clear and purposeful. Do not fill it with redundant output or theoretical explanations of topics covered in class. Show the final model's assessed performance and the code that produces the chosen Kaggle predictions.
+Run the complete notebook once more before delivery. Its cells must have ascending execution numbers and run from beginning to end without errors with the supplied data and stated dependencies. Instructors may rerun it. If a grid or random search is too costly to rerun, you may comment out that search cell, but fit the final model with its selected parameters in a separate cell.
+The submitted notebook must explain the final Kaggle solution. A substantial difference between its reported performance and the Kaggle result may lead to a grading penalty. Only steps and results documented in the submitted notebook count toward assessment.
+Kaggle entries
+Use ML_Group_XX for Machine Learning groups and ATI_Group_XX for Advanced Topics in AI groups. Replace XX with the assigned two-digit group number. Use this as the Kaggle team name.
+Name each submitted CSV with a distinct version number, for example ML_Group_01_Version08.csv or ATI_Group_01_Version08.csv. You may submit up to 50 times per day.
+Select one final Kaggle submission. It must match the final model and predictions documented in the delivered notebook. Follow the Moodle instructions for choosing that submission.
+The public leaderboard uses 70% of the test rows; the remaining 30% determine the private leaderboard after the competition closes. Use sound validation rather than choosing a model solely from its public score.
+A Kaggle submission is required for the one-point Kaggle component of the Machine Learning project grade. It does not replace the course notebook submission.
+Research, delivery, and discussion
+For Machine Learning groups, use peer-reviewed sources for external research and do not cite ChatGPT or another LLM. The Machine Learning brief states that submitted code will undergo plagiarism and AI generation checking.
+The Machine Learning project deadline is 22 December 2026 at 17:59. The brief awards 0.15 points per day for early delivery, up to one point, and deducts one point per day for late delivery. Advanced Topics in AI groups should follow their course's deadline and grading rules.
+Machine Learning groups must attend the project discussion and be able to explain the methods they used. The brief states that non-attendance results in a zero and that grading includes a comparison with peers' work.
+Do your own work, apply yourself, and have fun.
