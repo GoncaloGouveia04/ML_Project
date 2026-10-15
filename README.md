@@ -16,6 +16,27 @@ The central principle is to build a pipeline that is accurate, reproducible
 and useful for commercial decision-making. Every important decision should be
 supported by an observation from the data and recorded in a clean notebook.
 
+## Environment Setup
+
+Install [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
+(Miniconda or Anaconda), then open a terminal in the project root and create
+the environment from the provided `environment.yml` file:
+
+```bash
+conda env create -f environment.yml
+conda activate machine_learning_project
+```
+
+The environment uses Python 3.13.5 and installs the project's pinned Python
+dependencies, including Jupyter and scikit-learn. To open the main notebook:
+
+```bash
+jupyter notebook
+```
+
+Then open `notebooks/main.ipynb`. In VS Code, select the
+`machine_learning_project` environment as the notebook kernel.
+
 ## Data at a Glance
 
 The main files are in `data/`:
@@ -188,4 +209,3 @@ The project is complete when a reader can follow the reasoning from business
 question to final CSV, reproduce every transformation, understand why the final
 model was selected and verify that the predictions were generated without
 using unavailable target information.
-
