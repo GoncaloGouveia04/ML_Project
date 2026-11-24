@@ -1,211 +1,61 @@
-# Machine Learning Project 2026/2027
+# Machine Learning Project 2026/2027 — 90-Day Repeat Purchase Prediction
 
-## Repeat Purchase Prediction
+**Group 33** · Gonçalo Gouveia · Gonçalo Faustino · Rita Pinto · João Santos
 
-This project uses historical wholesale transactions to answer one practical
-question: **will a customer make another purchase within 90 days of the current
-purchase?**
+Everything & Then Some, a wholesale distributor, wants to know at the moment of each purchase
+whether the same customer will **buy again within the next 90 days**. This repository contains the
+whole study, from exploration to the Kaggle submission, as six notebooks that share one Python module.
 
-The repository contains two connected pieces of work:
+## Repository structure
 
-1. **Homework:** a compact end-to-end version of the modelling workflow.
-2. **Final project:** a deeper study that compares, improves, explains and
-   deploys the strongest solution.
+| Path | Content |
+|---|---|
+| `notebooks/01_Business_and_Data_Exploration.ipynb` | Group contribution, abstract, I. business need and assessment strategy, II.a data exploration |
+| `notebooks/02_Preprocessing.ipynb` | II.b cleaning and preparation, with every optional choice tested |
+| `notebooks/03_Feature_Selection.ipynb` | III.a feature-selection strategy |
+| `notebooks/04_Modelling_and_Optimisation.ipynb` | III.b benchmark of 12 algorithms, two-stage tuning, final model, sealed holdout |
+| `notebooks/05_Open_Ended.ipynb` | IV. can the model be trusted to drive commercial actions? |
+| `notebooks/06_Deployment.ipynb` | V. the final pipeline applied to `test.csv` and the Kaggle file |
+| `helpers/project_pipeline.py` | Cleaning, features, the scikit-learn pipeline, the validation design and the scoring used by every notebook |
+| `data/` | The supplied files: `train.csv`, `test.csv`, `clientes.csv`, `sample_submission.csv` |
+| `results/stage1_search.json` | Saved results of the stage-1 random search of notebook 04 |
+| `outputs/` | Created when the notebooks run: the fitted final model, its configuration and the submission CSV (not versioned) |
 
-The central principle is to build a pipeline that is accurate, reproducible
-and useful for commercial decision-making. Every important decision should be
-supported by an observation from the data and recorded in a clean notebook.
+## Environment
 
-## Environment Setup
-
-Install [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
-(Miniconda or Anaconda), then open a terminal in the project root and create
-the environment from the provided `environment.yml` file:
+Install [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) (Miniconda or
+Anaconda), then open a terminal in the project root:
 
 ```bash
 conda env create -f environment.yml
 conda activate machine_learning_project
-```
-
-The environment uses Python 3.13.5 and installs the project's pinned Python
-dependencies, including Jupyter and scikit-learn. To open the main notebook:
-
-```bash
 jupyter notebook
 ```
 
-Then open `notebooks/main.ipynb`. In VS Code, select the
-`machine_learning_project` environment as the notebook kernel.
+The environment uses Python 3.13.5 with pinned versions of scikit-learn, pandas, NumPy and the
+other dependencies. In VS Code, select the `machine_learning_project` environment as the notebook kernel.
 
-## Data at a Glance
+## Running the project
 
-The main files are in `data/`:
+Open the notebooks in the `notebooks/` folder and run them in order, **01 to 06**:
 
-- `train.csv`: 6,534 purchase occasions with the binary target
-  `repeat_purchase_90d`.
-- `test.csv`: 986 later purchase occasions without the target.
-- `clientes.csv`: optional customer-level information that can be joined using
-  `customer_id`.
-- `sample_submission.csv`: the required Kaggle format with `ID` and
-  `repeat_purchase_90d`.
+- notebook 04 saves the final model and its configuration in `outputs/`, which notebooks 05 and 06 read;
+- notebook 06 writes the Kaggle file `outputs/ML_Group_33_Version01.csv`.
 
-Each row represents one customer purchase occasion. The predictors include:
+Notebook 04 runs the stage-1 random search (about 5 minutes on 12 cores) and saves its results in
+`results/stage1_search.json`; set `RUN_SEARCH = False` in notebook 04 to load them instead.
 
-- current transaction amounts, tax, shipping, discounts and cost;
-- purchase detail and invoice counts;
-- categorical information such as payment type, salesperson, zone, transport,
-  warehouse and document series;
-- recency, customer tenure and previous-purchase statistics;
-- rolling purchase counts and spend over 30, 90, 180 and 365 days;
-- the anonymized purchase date and a `random_noise` field that must be tested,
-  not blindly trusted.
+## Main result
 
-The target is `1` when the same customer purchases again within the following
-90 days, and `0` otherwise. `ID` is only a row/submission identifier and must
-remain unchanged in the final predictions.
+The final model is an **Extra Trees** classifier (575 randomised trees, at least 6 purchases per
+leaf, 25 % of the columns considered at each split, balanced class weights) behind a vote of three
+feature selectors, with a decision threshold of 0.39 chosen for F1 on the validation windows.
 
-## Homework: Compact Pipeline
+| Evaluation | ROC-AUC | F1 | F1 of always predicting "repeat" |
+|---|---|---|---|
+| Five yearly validation windows (mean ± sd) | 0.801 ± 0.024 | 0.751 | 0.703 |
+| Holdout: last 12 months of `train.csv` | 0.816 | 0.802 | 0.738 |
+| Kaggle public leaderboard | — | 0.808 | — |
 
-**Deadline: 26 October 2026, 17:59**
-
-The homework is a small, complete rehearsal for the final project. The goal is
-to understand the data, prepare it correctly, select useful variables, train a
-simple binary classifier and produce predictions for `test.csv`.
-
-### What to do
-
-1. **Explore the data**
-   - Load `train.csv` and inspect `clientes.csv` if the customer join is useful.
-   - Describe the rows, columns, target balance and important distributions.
-   - Check missing values, duplicates, invalid values and suspicious
-     inconsistencies.
-   - Use focused univariate and multivariate plots to find relationships that
-     can guide modelling decisions.
-
-2. **Clean and preprocess**
-   - Define how numerical missing values, categorical missing values and
-     anomalous observations are handled.
-   - Decide whether `clientes.csv` adds useful information through
-     `customer_id`.
-   - Create additional features only when they have a clear purpose.
-   - Encode categorical variables and scale numerical variables when needed.
-   - Fit preprocessing only on the training data. Never use `test.csv` to learn
-     imputation, scaling or encoding parameters.
-
-3. **Select features**
-   - Use a clear class-based feature-selection method.
-   - Treat identifiers and identifier-like fields critically.
-   - Explain the final feature set and what was removed or retained.
-
-4. **Build and assess a simple model**
-   - Choose an assessment strategy and suitable classification metrics.
-   - Train at least one model using `train.csv`.
-   - Generate one prediction for every row in `test.csv`.
-   - Export predictions using the same columns as `sample_submission.csv`.
-
-### Homework deliverables
-
-- A clean Jupyter notebook, or a zip file containing the notebooks, with code
-  and Markdown comments.
-- A **two-page PDF** describing the pipeline structure and rationale.
-- Files named using the convention `Homework_GroupXX`.
-
-The homework is worth up to 20 points, including a possible extra point for
-finishing in the top five Kaggle groups.
-
-## Final Project: Full Study
-
-**Deadline: 22 December 2026, 17:59**
-
-The final project starts from the homework pipeline and turns it into a
-defensible modelling study. The emphasis is not only on obtaining a good
-Kaggle score, but also on showing why the selected approach is reliable,
-interpretable and reproducible.
-
-### Recommended project structure
-
-#### Group contribution and abstract
-
-Begin by identifying each member's contribution and estimated percentage. Add
-a 200-300 word abstract covering the business context, objectives, approach,
-main results and conclusions.
-
-#### I. Identify the business need
-
-Explain why predicting a 90-day repeat purchase matters. Define the modelling
-question, the intended commercial use and the assessment strategy, such as a
-holdout split or cross-validation. Because purchase dates have an order, the
-validation design should be chosen carefully and justified.
-
-#### II. Explore and preprocess the data
-
-Describe the received data and the insights that influence the pipeline. Clean
-the data, handle missing and implausible values, encode categoricals, engineer
-useful features and assess whether the optional customer table improves the
-information available to the model. Keep the process reproducible and avoid
-target leakage.
-
-#### III. Classification and optimization
-
-This is the largest part of the project:
-
-- define metrics that match the business problem and explain them;
-- implement and compare at least **five class-covered algorithms**;
-- apply a justified feature-selection strategy;
-- benchmark candidate models under the same evaluation protocol;
-- optimize the strongest approaches and discuss the effect of tuning;
-- compare results clearly, including uncertainty or variation where possible;
-- train the selected final solution and submit it to Kaggle.
-
-#### IV. Open-ended investigation
-
-Add a question that goes beyond simply adding another standard pipeline step.
-Good options include comparing alternative feature sets, analysing errors,
-studying probability calibration, investigating prediction confidence,
-performing an ablation study, or building a small interface for scoring new
-observations. State the objective first, then present the method, results and
-key takeaways.
-
-#### V. Deployment
-
-The final notebook must apply the same completed pipeline to `test.csv` and
-write the selected solution as a submission-ready CSV. The deployment section
-should demonstrate that a new observation receives exactly the same preparation
-steps as the training data and that the output follows the sample submission
-schema.
-
-## Suggested Work Sequence
-
-1. Establish a reproducible baseline and inspect the target balance.
-2. Build one leakage-safe preprocessing pipeline.
-3. Complete the homework model and submission first.
-4. Reuse the validated pipeline for five-model benchmarking.
-5. Compare feature sets and optimize only the strongest candidates.
-6. Choose one open-ended research question and evaluate it rigorously.
-7. Retrain the final model, generate the Kaggle CSV and run the notebook from
-   start to finish before submitting.
-
-## Quality and Submission Rules
-
-- Every notebook cell should have a clear purpose.
-- Include only analyses that affect a decision or communicate an important
-  result.
-- Do not use forbidden AutoML tools such as Lazy Predict, Feature Tools or
-  TSFresh.
-- Keep all modelling decisions and relevant experiments visible in the
-  submitted notebooks.
-- Use permitted tools such as vanilla scikit-learn, TensorFlow, Keras,
-  PyTorch/skorch or Transformers.
-- Cite reliable peer-reviewed sources when external evidence is needed; do not
-  cite LLMs.
-- Run the final notebook from beginning to end without interruption.
-- Submit to Kaggle, since the competition contributes to the evaluation.
-- The project may receive an extra point for being publicly available on
-  GitHub.
-
-## Definition of Done
-
-The project is complete when a reader can follow the reasoning from business
-question to final CSV, reproduce every transformation, understand why the final
-model was selected and verify that the predictions were generated without
-using unavailable target information.
+Notebook 04 explains how the model was chosen, including a refinement stage during which the
+holdout and public Kaggle scores were also consulted.

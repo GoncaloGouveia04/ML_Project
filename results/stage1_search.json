@@ -1,0 +1,92 @@
+{
+  "LogisticRegression": {
+    "best_params": {
+      "prep__columns__cat__encode__min_frequency": 1,
+      "model__l1_ratio": 0,
+      "model__class_weight": null,
+      "model__C": 0.03
+    },
+    "best_ROC_AUC": 0.7929389457335013,
+    "candidates": 60,
+    "minutes": 0.6
+  },
+  "KNN": {
+    "best_params": {
+      "prep__columns__cat__encode__min_frequency": 1,
+      "model__weights": "distance",
+      "model__p": 1,
+      "model__n_neighbors": 101
+    },
+    "best_ROC_AUC": 0.7884410169766156,
+    "candidates": 60,
+    "minutes": 0.1
+  },
+  "RandomForest": {
+    "best_params": {
+      "prep__columns__cat__encode__min_frequency": 10,
+      "model__n_estimators": 300,
+      "model__min_samples_leaf": 5,
+      "model__max_features": "log2",
+      "model__max_depth": 12,
+      "model__criterion": "gini",
+      "model__class_weight": null
+    },
+    "best_ROC_AUC": 0.792490450980457,
+    "candidates": 60,
+    "minutes": 1.3
+  },
+  "ExtraTrees": {
+    "best_params": {
+      "prep__columns__cat__encode__min_frequency": 10,
+      "model__n_estimators": 300,
+      "model__min_samples_leaf": 5,
+      "model__max_features": "sqrt",
+      "model__max_depth": null,
+      "model__criterion": "entropy",
+      "model__class_weight": null
+    },
+    "best_ROC_AUC": 0.7995752076034301,
+    "candidates": 60,
+    "minutes": 0.6
+  },
+  "AdaBoost": {
+    "best_params": {
+      "prep__columns__cat__encode__min_frequency": 1,
+      "model__n_estimators": 500,
+      "model__learning_rate": 0.2
+    },
+    "best_ROC_AUC": 0.7860332626304773,
+    "candidates": 60,
+    "minutes": 1.1
+  },
+  "HistGradientBoosting": {
+    "best_params": {
+      "prep__columns__cat__encode__min_frequency": 1,
+      "model__min_samples_leaf": 50,
+      "model__max_leaf_nodes": 7,
+      "model__max_iter": 300,
+      "model__max_depth": 5,
+      "model__learning_rate": 0.03,
+      "model__l2_regularization": 10
+    },
+    "best_ROC_AUC": 0.7897224409359371,
+    "candidates": 60,
+    "minutes": 0.4
+  },
+  "MLP": {
+    "best_params": {
+      "prep__columns__cat__encode__min_frequency": 1,
+      "model__learning_rate_init": 0.001,
+      "model__hidden_layer_sizes": [
+        8
+      ],
+      "model__early_stopping": false,
+      "model__batch_size": 200,
+      "model__alpha": 3,
+      "model__activation": "relu"
+    },
+    "best_ROC_AUC": 0.7945961737655957,
+    "candidates": 60,
+    "minutes": 0.7
+  }
+}

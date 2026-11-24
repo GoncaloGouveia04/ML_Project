@@ -17,9 +17,9 @@ The module holds four kinds of code:
 
 Where each piece comes from
 ---------------------------
-Each function says iML_DSAA_Practicalsn its docstring where it comes from:
-- "Part 1": taken from our homework notebooks (`notebooks/01-04`), kept or
-  changed (with the reason);
+Each function says in its docstring where it comes from:
+- "Part 1": taken from our homework notebooks (not included in this
+  repository), kept or changed (with the reason);
 - "Week N": the class notebook in `ML_DSAA_Practicals` that teaches it;
 - "New": added in Part 2, with the finding that motivated it.
 """
@@ -589,6 +589,29 @@ def development_split(train: pd.DataFrame, n_folds=5, window_days=365) -> Design
     return Design(X_dev, y_dev, X_all[hold].reset_index(drop=True),
                   y_all[hold].reset_index(drop=True), X_all, y_all, folds,
                   holdout_start, development_end, starts)
+
+
+class RecentPeriodSplit:
+    """One chronological split of the rows it receives: older rows to fit, the latest period to hold out.
+
+    Used as the `cv` of CalibratedClassifierCV (notebook 05). The probability map is learned on the
+    last `days` of the training rows, from a model fitted on rows more than `gap_days` earlier, so
+    the time rule of the validation windows also holds inside each training window. With an
+    integer `cv`, CalibratedClassifierCV uses StratifiedKFold, which ignores the time order.
+    """
+
+    def __init__(self, days=365, gap_days=HORIZON_DAYS):
+        self.days = days
+        self.gap_days = gap_days
+
+    def split(self, X, y=None, groups=None):
+        dates = pd.to_datetime(pd.Series(X[DATE]).reset_index(drop=True))
+        start = dates.max() - pd.Timedelta(days=self.days)
+        yield (np.flatnonzero(dates < start - pd.Timedelta(days=self.gap_days)),
+               np.flatnonzero(dates >= start))
+
+    def get_n_splits(self, X=None, y=None, groups=None):
+        return 1
 
 
 def describe_folds(design: Design) -> pd.DataFrame:
